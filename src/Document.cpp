@@ -112,7 +112,7 @@ constexpr std::uint8_t array_end_nexts[] { 1u, 2u, 10u };
 constexpr std::uint8_t object_end_nexts[] { 1u, 2u, 10u, 17u };
 constexpr std::uint8_t separator_in_object_nexts[] { 8u };
 constexpr std::uint8_t value_in_object_nexts[] { 1u, 2u };
-constexpr std::uint8_t assigment_nexts[] { 0u, 3u, 4u, 5u, 6u, 16u };
+constexpr std::uint8_t assigment_nexts[] { 0u, 3u, 4u, 5u, 6u, 7u, 16u };
 constexpr std::uint8_t key_nexts[] { 9u };
 constexpr std::uint8_t object_begin_nexts[] { 1u, 8u };
 constexpr std::uint8_t root_nexts[] { 0u, 16u, 18u, 19u, 20u, 21u, 22u };
@@ -457,7 +457,8 @@ bool find_key(std::size_t current_transition_a, std::size_t context_size_a, Scop
 
     if (2u == p_context->found_cnt)
     {
-        if (0u == current_transition_a || 3u == current_transition_a || 16u == current_transition_a)
+        if (0u == current_transition_a || 3u == current_transition_a || 4u == current_transition_a || 5u == current_transition_a ||
+            6u == current_transition_a || 7u == current_transition_a || 16u == current_transition_a)
         {
             p_context->p_current = Lexeme::string == lexeme_a.kind ? lexeme_a.value.data() - 1u : lexeme_a.value.data();
             return false;
@@ -654,7 +655,7 @@ template<> Document::Object Document::Object::get(std::string_view key_a) const
     FindKeyContext find_key_context { .key = key_a };
     bool find_key_res = evaluate_json({ this->p_begin, this->p_end }, { .function = find_key, .p_user_data = &find_key_context });
 
-    if (true == find_key_res && nullptr != find_key_context.p_current)
+    if (true == find_key_res && nullptr != find_key_context.p_current && '{' == (*find_key_context.p_current))
     {
         EvaluateNodeContext evaluate_node_context;
         bool evaluate_node_res = evaluate_json(
@@ -677,7 +678,7 @@ template<> Document::Array Document::Object::get(std::string_view key_a) const
     FindKeyContext find_key_context { .key = key_a };
     bool find_key_res = evaluate_json({ this->p_begin, this->p_end }, { .function = find_key, .p_user_data = &find_key_context });
 
-    if (true == find_key_res && nullptr != find_key_context.p_current)
+    if (true == find_key_res && nullptr != find_key_context.p_current && '[' == (*find_key_context.p_current))
     {
         EvaluateNodeContext evaluate_node_context;
         bool evaluate_node_res = evaluate_json(
