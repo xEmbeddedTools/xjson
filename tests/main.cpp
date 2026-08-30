@@ -157,6 +157,12 @@ TEST_CASE("reads heterogeneous arrays and nested nodes by index", "[array][neste
     REQUIRE(2u == nested.elements_count);
     REQUIRE("nested" == nested.get<xjson::Document::Value>(0u));
     REQUIRE("2" == nested.get<xjson::Document::Value>(1u));
+
+    const auto invalid_array = array.get<xjson::Document::Array>(4u);
+    REQUIRE(false == invalid_array);
+
+    const auto invalid_object = array.get<xjson::Document::Object>(5u);
+    REQUIRE(false == invalid_object);
 }
 
 TEST_CASE("returns an empty node when the requested root type does not match", "[root]")

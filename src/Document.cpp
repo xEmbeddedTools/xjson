@@ -661,7 +661,7 @@ template<> Document::Value Document::Object::get(std::string_view key_a) const
     FindKeyContext context { .key = key_a };
     bool find_key_res = evaluate_json({ this->p_begin, this->p_end }, { .function = find_key, .p_user_data = &context });
 
-    if (true == find_key_res && nullptr != context.p_current)
+    if (true == find_key_res && nullptr != context.p_current && ('{' != (*context.p_current) && '[' != (*context.p_current)))
     {
         const auto lexeme = evaluate_next_lexeme({ context.p_current, this->p_end });
         return lexeme.value;
@@ -724,7 +724,8 @@ template<> Document::Value Document::Array::get(std::size_t index_a) const
     bool evaluate_node_res =
         evaluate_json({ this->p_begin, this->p_end }, { .function = evaluate_array_element_value, .p_user_data = &evaluate_array_element_context });
 
-    if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current)
+    if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current &&
+        ('{' != *(evaluate_array_element_context.p_current) && '[' != *(evaluate_array_element_context.p_current)))
     {
         const auto lexeme = evaluate_next_lexeme({ evaluate_array_element_context.p_current, this->p_end });
         return lexeme.value;
@@ -740,7 +741,7 @@ template<> Document::Object Document::Array::get(std::size_t index_a) const
     bool evaluate_node_res =
         evaluate_json({ this->p_begin, this->p_end }, { .function = evaluate_array_element_object, .p_user_data = &evaluate_array_element_context });
 
-    if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current)
+    if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current && '{' == *(evaluate_array_element_context.p_current))
     {
         EvaluateNodeContext evaluate_node_context;
         bool evaluate_node_res = evaluate_json(
@@ -766,7 +767,7 @@ template<> Document::Array Document::Array::get(std::size_t index_a) const
     bool evaluate_node_res =
         evaluate_json({ this->p_begin, this->p_end }, { .function = evaluate_array_element_array, .p_user_data = &evaluate_array_element_context });
 
-    if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current)
+    if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current && '[' == *(evaluate_array_element_context.p_current))
     {
         EvaluateNodeContext evaluate_node_context;
         bool evaluate_node_res = evaluate_json(
