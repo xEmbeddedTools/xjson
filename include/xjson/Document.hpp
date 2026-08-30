@@ -1,0 +1,95 @@
+#pragma once
+
+// std
+#include <array>
+#include <cassert>
+#include <span>
+#include <string_view>
+
+namespace xjson {
+class Document
+{
+public:
+    constexpr static auto npos = static_cast<std::size_t>(-1);
+
+    using Value = std::string_view;
+
+    struct Object
+    {
+        const std::size_t fields_count = 0u;
+
+        template<typename Type> Type get(std::string_view key_a) const = delete;
+
+        operator bool() const
+        {
+            return nullptr != this->p_begin && nullptr != this->p_end;
+        }
+
+    private:
+        Object() = default;
+        Object(std::size_t fields_count_a, const char* p_begin_a, const char* p_end_a)
+            : fields_count(fields_count_a)
+            , p_begin(p_begin_a)
+            , p_end(p_end_a)
+        {
+        }
+
+        const char* p_begin = nullptr;
+        const char* p_end = nullptr;
+
+        friend struct Array;
+        friend class Document;
+    };
+    struct Array
+    {
+        const std::size_t elements_count = 0u;
+
+        template<typename Type> Type get(std::size_t index_a) const = delete;
+
+        operator bool() const
+        {
+            return nullptr != this->p_begin && nullptr != this->p_end;
+        }
+
+    private:
+        Array() = default;
+        Array(std::size_t elements_count_a, const char* p_begin_a, const char* p_end_a)
+            : elements_count(elements_count_a)
+            , p_begin(p_begin_a)
+            , p_end(p_end_a)
+        {
+        }
+
+        const char* p_begin = nullptr;
+        const char* p_end = nullptr;
+
+        friend struct Object;
+        friend class Document;
+    };
+
+    Document(std::string_view document_data_a);
+
+    template<typename Node> Node get_root() const = delete;
+
+    bool is_valid() const
+    {
+        return this->valid;
+    }
+
+private:
+    std::string_view data;
+    bool valid = false;
+};
+
+template<> Document::Value Document::get_root() const;
+template<> Document::Object Document::get_root() const;
+template<> Document::Array Document::get_root() const;
+
+template<> Document::Value Document::Object::get(std::string_view key_a) const;
+template<> Document::Object Document::Object::get(std::string_view key_a) const;
+template<> Document::Array Document::Object::get(std::string_view key_a) const;
+
+template<> Document::Value Document::Array::get(std::size_t index_a) const;
+template<> Document::Object Document::Array::get(std::size_t index_a) const;
+template<> Document::Array Document::Array::get(std::size_t index_a) const;
+} // namespace xjson
