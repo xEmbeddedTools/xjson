@@ -1,6 +1,6 @@
 # xjson
 
-`xjson` is a small C++20 library for validating and reading JSON data. It exposes document data through `std::string_view`, so retrieving values does not require copying them.
+`xjson` is a small C++20 library for validating and reading JSON data. It exposes document data through `std::string_view`, so retrieving values does not require copying them. It performs no dynamic memory allocation, making it suitable for memory-constrained embedded systems.
 
 ## Requirements
 
