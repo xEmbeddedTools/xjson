@@ -115,12 +115,13 @@ TEST_CASE("reads nested objects and arrays from an object", "[object][nested]")
     const auto profile = object.get<xjson::Document::Object>("profile");
     REQUIRE(true == profile);
 
-    REQUIRE(profile.fields_count == 2u);
+    REQUIRE(2u == profile.fields_count);
     REQUIRE("Ada" == profile.get<xjson::Document::Value>("name"));
     REQUIRE("admin" == profile.get<xjson::Document::Value>("role"));
 
     const auto scores = object.get<xjson::Document::Array>("scores");
     REQUIRE(scores);
+
     REQUIRE(3u == scores.elements_count);
     REQUIRE("10" == scores.get<xjson::Document::Value>(0u));
     REQUIRE("20" == scores.get<xjson::Document::Value>(1u));
