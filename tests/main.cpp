@@ -48,7 +48,7 @@ TEST_CASE("accepts supported compound JSON values and whitespace", "[validation]
 
 TEST_CASE("rejects malformed JSON", "[validation]")
 {
-    for (const auto json : { "{", "[", "{\"key\"}", "{\"key\":}", "[1,]", "{\"key\":1,}", "[1 2]", "{\"key\":1 \"next\":2}" })
+    for (const auto json : { "", " ", "\n", "{", "[", "{\"key\"}", "{\"key\":}", "[1,]", "{\"key\":1,}", "[1 2]", "{\"key\":1 \"next\":2}" })
     {
         REQUIRE(false == xjson::Document(json).is_valid());
     }

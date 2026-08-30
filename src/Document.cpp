@@ -343,12 +343,16 @@ bool evaluate_json(std::string_view json_data_a, TransitionCallback on_transitio
     const char* p_current = json_data_a.data();
     const char* p_end = json_data_a.data() + json_data_a.size();
 
+    std::size_t lexemes_count = 0u;
+
     while (p_current != p_end)
     {
         const auto lexeme = evaluate_next_lexeme({ p_current, p_end });
 
         if (Lexeme::unknown != lexeme.kind)
         {
+            lexemes_count++;
+
             auto f = [&](std::size_t index_a) -> bool {
                 if (transitions[index_a].scope == context.top<Scope::Kind>() && transitions[index_a].trigger == lexeme.kind)
                 {
@@ -441,7 +445,7 @@ bool evaluate_json(std::string_view json_data_a, TransitionCallback on_transitio
         }
     }
 
-    return 0u == context.get_size();
+    return 0u == context.get_size() && 0u != lexemes_count;
 }
 
 struct FindKeyContext

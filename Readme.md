@@ -89,7 +89,6 @@ target_compile_definitions(xjson PRIVATE XJSON_MAX_NESTING_DEPTH=8)
 - Exponent notation such as `1e3` is not supported. Numeric lexemes of 32 or more characters are rejected.
 - JSON string escape sequences, including `\"`, `\\`, `\n`, and `\uXXXX`, are not supported.
 - Unescaped control characters inside strings may be accepted.
-- An empty input, or input containing only whitespace, may be considered valid even though a JSON text must contain a value.
 - Nesting depth is limited by `XJSON_MAX_NESTING_DEPTH` (17 by default); more deeply nested documents are rejected.
 
 Do not use `is_valid()` as proof of strict RFC 8259 conformance. Validate the expected input subset thoroughly before using the library in production.
