@@ -67,6 +67,10 @@ A missing object or array converts to `false`. Scalar values are returned as `Do
 
 > `Document` does not own its input data. The text passed to its constructor must remain alive while the document, and any objects or arrays obtained from it, are in use.
 
+## Intended use
+
+`xjson` is intended primarily for embedded systems where predictable memory usage and avoiding heap allocation are important. It works directly on the received JSON text and does not build a separate in-memory representation of the document or a separate token list.
+
 ## Tests
 
 The tests use Catch2, whose source is included in `tests/externals/catch2`.
