@@ -71,6 +71,29 @@ A missing object or array converts to `false`. Scalar values are returned as `Do
 
 `xjson` is intended primarily for embedded systems where predictable memory usage and avoiding heap allocation are important. It works directly on the received JSON text and does not build a separate in-memory representation of the document or a separate token list.
 
+### Configuring nesting depth
+
+`XJSON_MAX_NESTING_DEPTH` configures the maximum object and array nesting depth at compile time. Its default value is `17`.
+
+Set the macro when compiling the `xjson` target:
+
+```cmake
+add_subdirectory(path/to/xjson)
+target_compile_definitions(xjson PRIVATE XJSON_MAX_NESTING_DEPTH=8)
+```
+
+## Current limitations
+
+`xjson` is not yet fully compliant with [RFC 8259](https://www.rfc-editor.org/info/rfc8259/). In particular:
+
+- Exponent notation such as `1e3` is not supported. Numeric lexemes of 32 or more characters are rejected.
+- JSON string escape sequences, including `\"`, `\\`, `\n`, and `\uXXXX`, are not supported.
+- Unescaped control characters inside strings may be accepted.
+- An empty input, or input containing only whitespace, may be considered valid even though a JSON text must contain a value.
+- Nesting depth is limited by `XJSON_MAX_NESTING_DEPTH` (17 by default); more deeply nested documents are rejected.
+
+Do not use `is_valid()` as proof of strict RFC 8259 conformance. Validate the expected input subset thoroughly before using the library in production.
+
 ## Tests
 
 The tests use Catch2, whose source is included in `tests/externals/catch2`.

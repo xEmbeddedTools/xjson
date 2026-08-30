@@ -1,6 +1,10 @@
 // this
 #include <xjson/Document.hpp>
 
+#ifndef XJSON_MAX_NESTING_DEPTH
+#define XJSON_MAX_NESTING_DEPTH 17u
+#endif
+
 namespace {
 struct Lexeme
 {
@@ -85,6 +89,11 @@ public:
         return this->size / width;
     }
 
+    bool is_full() const
+    {
+        return this->get_size() == capacity;
+    }
+
 private:
     std::uint32_t size = 0u;
     std::uint32_t d[((capacity * width) + 31u) / 32u] = { 0u };
@@ -150,23 +159,86 @@ Lexeme evaluate_next_lexeme(std::string_view json_data_a)
             return Lexeme::keyword;
         }
 
-        const std::size_t start_idx = ('-' == value_a.front()) ? 1u : 0u;
-        std::size_t fp_cnt = 0;
+        std::size_t fp_pos = value_a.length();
 
-        for (std::size_t i = start_idx; i < value_a.length(); i++)
+        for (std::size_t i = 0; i < value_a.length(); i++)
         {
-            const char c = value_a[i];
-
-            if ('.' == c)
+            if ('.' == value_a[i])
             {
-                fp_cnt++;
+                if (value_a.length() == fp_pos)
+                {
+                    fp_pos = i;
+                }
+                else
+                {
+                    return Lexeme::unknown;
+                }
             }
+        }
 
-            if ((c < '0' || c > '9') && ('.' != c || fp_cnt > 1u))
+        const std::string_view natural_part = { value_a.begin() + ('-' == value_a.front() ? 1u : 0u), value_a.begin() + fp_pos };
+
+        if (false == natural_part.empty())
+        {
+            if (natural_part.front() >= '0' && natural_part.front() <= '9' && value_a.length() < 32u)
+            {
+                std::uint32_t zeros_mask = 0x0u;
+                std::uint32_t non_zeros_mask = 0x0u;
+
+                for (std::size_t i = 0; i < natural_part.length(); i++)
+                {
+                    char c = natural_part[i];
+
+                    if ('0' == c)
+                    {
+                        zeros_mask |= 1u << i;
+                    }
+                    else
+                    {
+                        non_zeros_mask |= 1u << i;
+                    }
+
+                    if (c < '0' || c > '9')
+                    {
+                        return Lexeme::unknown;
+                    }
+                }
+
+                if ((0x1u == (zeros_mask & 0x1u) && 0x0u != non_zeros_mask) || (0u == non_zeros_mask && 0x3u == (zeros_mask & 0x3u)))
+                {
+                    return Lexeme::unknown;
+                }
+            }
+            else
             {
                 return Lexeme::unknown;
             }
         }
+        else
+        {
+            return Lexeme::unknown;
+        }
+
+        if (fp_pos != value_a.length())
+        {
+            const std::string_view fractional_part = { value_a.begin() + fp_pos + 1u, value_a.end() };
+
+            if (false == fractional_part.empty())
+            {
+                for (const auto c : fractional_part)
+                {
+                    if (c < '0' || c > '9')
+                    {
+                        return Lexeme::unknown;
+                    }
+                }
+            }
+            else
+            {
+                return Lexeme::unknown;
+            }
+        }
+
         return Lexeme::number;
     };
 
@@ -261,7 +333,7 @@ Lexeme evaluate_next_lexeme(std::string_view json_data_a)
 
 bool evaluate_json(std::string_view json_data_a, TransitionCallback on_transition_a = {})
 {
-    BitStack<2u, 17> context;
+    BitStack<2u, XJSON_MAX_NESTING_DEPTH> context;
     std::size_t current_transition = transitions.size() - 1u;
     const char* p_current = json_data_a.data();
     const char* p_end = json_data_a.data() + json_data_a.size();
@@ -286,11 +358,25 @@ bool evaluate_json(std::string_view json_data_a, TransitionCallback on_transitio
 
             if (object_scope.push == lexeme.value)
             {
-                context.push(object_scope.kind);
+                if (false == context.is_full())
+                {
+                    context.push(object_scope.kind);
+                }
+                else
+                {
+                    return false;
+                }
             }
             else if (array_scope.push == lexeme.value)
             {
-                context.push(array_scope.kind);
+                if (false == context.is_full())
+                {
+                    context.push(array_scope.kind);
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             const auto next_node_itr = std::find_if(transitions[current_transition].next.begin(), transitions[current_transition].next.end(), f);

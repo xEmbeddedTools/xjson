@@ -24,14 +24,8 @@ TEST_CASE("string is valid")
 }
 TEST_CASE("positive integer is valid")
 {
-    {
-        xjson::Document document("1");
-        REQUIRE(true == document.is_valid());
-    }
-    {
-        xjson::Document document("+1");
-        REQUIRE(true == document.is_valid());
-    }
+    xjson::Document document("1");
+    REQUIRE(true == document.is_valid());
 }
 TEST_CASE("negative integer isvalid")
 {
@@ -40,14 +34,8 @@ TEST_CASE("negative integer isvalid")
 }
 TEST_CASE("positive floating point is valid")
 {
-    {
-        xjson::Document document("1.0");
-        REQUIRE(true == document.is_valid());
-    }
-    {
-        xjson::Document document("+1.0");
-        REQUIRE(true == document.is_valid());
-    }
+    xjson::Document document("1.0");
+    REQUIRE(true == document.is_valid());
 }
 TEST_CASE("negative floating point is valid")
 {
@@ -96,6 +84,49 @@ TEST_CASE("simple object")
 
         xjson::Document document(json);
         REQUIRE(true == document.is_valid());
+    }
+    {
+        constexpr std::string_view json = R"({"field":{}})";
+        xjson::Document document(json);
+        REQUIRE(true == document.is_valid());
+    }
+}
+
+TEST_CASE("incorrect number")
+{
+    {
+        xjson::Document document("0.avc");
+        REQUIRE(false == document.is_valid());
+    }
+
+    {
+        xjson::Document document("00.1234");
+        REQUIRE(false == document.is_valid());
+    }
+
+    {
+        xjson::Document document("01");
+        REQUIRE(false == document.is_valid());
+    }
+    {
+        xjson::Document document("-01");
+        REQUIRE(false == document.is_valid());
+    }
+    {
+        xjson::Document document(".1");
+        REQUIRE(false == document.is_valid());
+    }
+    {
+        xjson::Document document("1.");
+        REQUIRE(false == document.is_valid());
+    }
+    {
+        xjson::Document document("1.0.0");
+        REQUIRE(false == document.is_valid());
+    }
+    {
+        xjson::Document document("-");
+        REQUIRE(false == document.is_valid());
     }
 }
 
