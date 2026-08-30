@@ -120,7 +120,7 @@ TEST_CASE("reads nested objects and arrays from an object", "[object][nested]")
     REQUIRE("admin" == profile.get<xjson::Document::Value>("role"));
 
     const auto scores = object.get<xjson::Document::Array>("scores");
-    REQUIRE(scores);
+    REQUIRE(true == scores);
 
     REQUIRE(3u == scores.elements_count);
     REQUIRE("10" == scores.get<xjson::Document::Value>(0u));
@@ -129,6 +129,65 @@ TEST_CASE("reads nested objects and arrays from an object", "[object][nested]")
 
     REQUIRE(false == object.get<xjson::Document::Object>("missing"));
     REQUIRE(false == object.get<xjson::Document::Array>("profile"));
+}
+
+TEST_CASE("reads heterogeneous arrays and nested nodes by index", "[array][nested]")
+{
+    constexpr std::string_view json = R"(["text",42,false,null,{"id":7},["nested",2]])";
+    const auto document = xjson::Document(json);
+    REQUIRE(true == document.is_valid());
+
+    const auto array = document.get_root<xjson::Document::Array>();
+    REQUIRE(true == array);
+
+    REQUIRE(true == array);
+    REQUIRE(6u == array.elements_count);
+    REQUIRE("text" == array.get<xjson::Document::Value>(0u));
+    REQUIRE("42" == array.get<xjson::Document::Value>(1u));
+    REQUIRE("false" == array.get<xjson::Document::Value>(2u));
+    REQUIRE("null" == array.get<xjson::Document::Value>(3u));
+
+    const auto object = array.get<xjson::Document::Object>(4u);
+    REQUIRE(true == object);
+    REQUIRE(1u == object.fields_count);
+    REQUIRE("7" == object.get<xjson::Document::Value>("id"));
+
+    const auto nested = array.get<xjson::Document::Array>(5u);
+    REQUIRE(true == nested);
+    REQUIRE(2u == nested.elements_count);
+    REQUIRE("nested" == nested.get<xjson::Document::Value>(0u));
+    REQUIRE("2" == nested.get<xjson::Document::Value>(1u));
+}
+
+TEST_CASE("returns an empty node when the requested root type does not match", "[root]")
+{
+    const auto scalar_document = xjson::Document("42");
+    REQUIRE(true == scalar_document.is_valid());
+
+    REQUIRE(false == scalar_document.get_root<xjson::Document::Object>());
+    REQUIRE(false == scalar_document.get_root<xjson::Document::Array>());
+
+    const auto object_document = xjson::Document("{}");
+    REQUIRE(true == object_document.is_valid());
+
+    REQUIRE(false == object_document.get_root<xjson::Document::Array>());
+}
+
+TEST_CASE("reports zero fields and elements for empty compound nodes", "[object][array]")
+{
+    const auto object_document = xjson::Document("{}");
+    const auto array_document = xjson::Document("[]");
+
+    REQUIRE(true == object_document.is_valid());
+    REQUIRE(true == array_document.is_valid());
+
+    const auto object = object_document.get_root<xjson::Document::Object>();
+    const auto array = array_document.get_root<xjson::Document::Array>();
+
+    REQUIRE(true == object);
+    REQUIRE(true == array);
+    REQUIRE(0u == object.fields_count);
+    REQUIRE(0u == array.elements_count);
 }
 
 int main(int argc, char* argv[])

@@ -108,7 +108,7 @@ private:
 constexpr std::uint8_t value_in_array_nexts[] { 10u, 17u };
 constexpr std::uint8_t separator_in_array_nexts[] { 0u, 11u, 12u, 13u, 14u, 15u, 16u };
 constexpr std::uint8_t array_begin_nexts[] { 0u, 11u, 12u, 13u, 14u, 15u, 16u, 17 };
-constexpr std::uint8_t array_end_nexts[] { 1u, 2u, 10u };
+constexpr std::uint8_t array_end_nexts[] { 1u, 2u, 10u, 17u };
 constexpr std::uint8_t object_end_nexts[] { 1u, 2u, 10u, 17u };
 constexpr std::uint8_t separator_in_object_nexts[] { 8u };
 constexpr std::uint8_t value_in_object_nexts[] { 1u, 2u };
@@ -117,33 +117,33 @@ constexpr std::uint8_t key_nexts[] { 9u };
 constexpr std::uint8_t object_begin_nexts[] { 1u, 8u };
 constexpr std::uint8_t root_nexts[] { 0u, 16u, 18u, 19u, 20u, 21u, 22u };
 
-constexpr std::array transitions { Transition { .value = "{", .trigger = Lexeme::separator, .scope = Scope::object, .next = object_begin_nexts },
-                                   Transition { .value = "}", .trigger = Lexeme::separator, .scope = Scope::object, .next = object_end_nexts },
-                                   Transition { .value = ",", .trigger = Lexeme::separator, .scope = Scope::object, .next = separator_in_object_nexts },
-                                   Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::object, .next = value_in_object_nexts },
-                                   Transition { .value = "", .trigger = Lexeme::number, .scope = Scope::object, .next = value_in_object_nexts },
-                                   Transition { .value = "true", .trigger = Lexeme::keyword, .scope = Scope::object, .next = value_in_object_nexts },
-                                   Transition { .value = "false", .trigger = Lexeme::keyword, .scope = Scope::object, .next = value_in_object_nexts },
-                                   Transition { .value = "null", .trigger = Lexeme::keyword, .scope = Scope::object, .next = value_in_object_nexts },
-                                   Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::object, .next = key_nexts },
-                                   Transition { .value = ":", .trigger = Lexeme::separator, .scope = Scope::object, .next = assigment_nexts },
-
-                                   Transition { .value = ",", .trigger = Lexeme::separator, .scope = Scope::array, .next = separator_in_array_nexts },
-                                   Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::array, .next = value_in_array_nexts },
-                                   Transition { .value = "true", .trigger = Lexeme::keyword, .scope = Scope::array, .next = value_in_array_nexts },
-                                   Transition { .value = "false", .trigger = Lexeme::keyword, .scope = Scope::array, .next = value_in_array_nexts },
-                                   Transition { .value = "null", .trigger = Lexeme::keyword, .scope = Scope::array, .next = value_in_array_nexts },
-                                   Transition { .value = "", .trigger = Lexeme::number, .scope = Scope::array, .next = value_in_array_nexts },
-                                   Transition { .value = "[", .trigger = Lexeme::separator, .scope = Scope::array, .next = array_begin_nexts },
-                                   Transition { .value = "]", .trigger = Lexeme::separator, .scope = Scope::array, .next = array_end_nexts },
-
-                                   Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::unknown, .next = {} },
-                                   Transition { .value = "", .trigger = Lexeme::number, .scope = Scope::unknown, .next = {} },
-                                   Transition { .value = "true", .trigger = Lexeme::keyword, .scope = Scope::unknown, .next = {} },
-                                   Transition { .value = "false", .trigger = Lexeme::keyword, .scope = Scope::unknown, .next = {} },
-                                   Transition { .value = "null", .trigger = Lexeme::keyword, .scope = Scope::unknown, .next = {} },
-
-                                   Transition { .value = "", .scope = Scope::unknown, .next = root_nexts } };
+constexpr std::array transitions { /* 0*/ Transition { .value = "{", .trigger = Lexeme::separator, .scope = Scope::object, .next = object_begin_nexts },
+                                   /* 1*/ Transition { .value = "}", .trigger = Lexeme::separator, .scope = Scope::object, .next = object_end_nexts },
+                                   /* 2*/ Transition { .value = ",", .trigger = Lexeme::separator, .scope = Scope::object, .next = separator_in_object_nexts },
+                                   /* 3*/ Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::object, .next = value_in_object_nexts },
+                                   /* 4*/ Transition { .value = "", .trigger = Lexeme::number, .scope = Scope::object, .next = value_in_object_nexts },
+                                   /* 5*/ Transition { .value = "true", .trigger = Lexeme::keyword, .scope = Scope::object, .next = value_in_object_nexts },
+                                   /* 6*/ Transition { .value = "false", .trigger = Lexeme::keyword, .scope = Scope::object, .next = value_in_object_nexts },
+                                   /* 7*/ Transition { .value = "null", .trigger = Lexeme::keyword, .scope = Scope::object, .next = value_in_object_nexts },
+                                   /* 8*/ Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::object, .next = key_nexts },
+                                   /* 9*/ Transition { .value = ":", .trigger = Lexeme::separator, .scope = Scope::object, .next = assigment_nexts },
+                                   /*  */
+                                   /*10*/ Transition { .value = ",", .trigger = Lexeme::separator, .scope = Scope::array, .next = separator_in_array_nexts },
+                                   /*11*/ Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::array, .next = value_in_array_nexts },
+                                   /*12*/ Transition { .value = "true", .trigger = Lexeme::keyword, .scope = Scope::array, .next = value_in_array_nexts },
+                                   /*13*/ Transition { .value = "false", .trigger = Lexeme::keyword, .scope = Scope::array, .next = value_in_array_nexts },
+                                   /*14*/ Transition { .value = "null", .trigger = Lexeme::keyword, .scope = Scope::array, .next = value_in_array_nexts },
+                                   /*15*/ Transition { .value = "", .trigger = Lexeme::number, .scope = Scope::array, .next = value_in_array_nexts },
+                                   /*16*/ Transition { .value = "[", .trigger = Lexeme::separator, .scope = Scope::array, .next = array_begin_nexts },
+                                   /*17*/ Transition { .value = "]", .trigger = Lexeme::separator, .scope = Scope::array, .next = array_end_nexts },
+                                   /*  */
+                                   /*18*/ Transition { .value = "", .trigger = Lexeme::string, .scope = Scope::unknown, .next = {} },
+                                   /*19*/ Transition { .value = "", .trigger = Lexeme::number, .scope = Scope::unknown, .next = {} },
+                                   /*20*/ Transition { .value = "true", .trigger = Lexeme::keyword, .scope = Scope::unknown, .next = {} },
+                                   /*21*/ Transition { .value = "false", .trigger = Lexeme::keyword, .scope = Scope::unknown, .next = {} },
+                                   /*22*/ Transition { .value = "null", .trigger = Lexeme::keyword, .scope = Scope::unknown, .next = {} },
+                                   /*  */
+                                   /*23*/ Transition { .value = "", .scope = Scope::unknown, .next = root_nexts } };
 
 static Scope object_scope { .push = "{", .pop = "}", .kind = Scope::object };
 static Scope array_scope { .push = "[", .pop = "]", .kind = Scope::array };
@@ -498,13 +498,28 @@ struct EvaluateNodeContext
     std::uint32_t elements = 0u;
     const char* p_current = nullptr;
 };
-bool evaluate_node(std::size_t current_transition_a, std::size_t context_size_a, Scope::Kind, const Lexeme& lexeme_a, void* p_user_data_a)
+bool evaluate_node(std::size_t current_transition_a, std::size_t context_size_a, Scope::Kind scope_a, const Lexeme& lexeme_a, void* p_user_data_a)
 {
     auto* p_context = reinterpret_cast<EvaluateNodeContext*>(p_user_data_a);
 
-    if (1u == context_size_a && (1u == current_transition_a || 2u == current_transition_a || current_transition_a == 10u || current_transition_a == 17u))
+    switch (scope_a)
     {
-        p_context->elements++;
+        case Scope::object: {
+            if ((1u == context_size_a && 9u == current_transition_a) || (2u == context_size_a && 1u == current_transition_a))
+            {
+                p_context->elements++;
+            }
+        }
+        break;
+
+        case Scope::array: {
+            if ((1u == context_size_a && (current_transition_a >= 11u && current_transition_a <= 15u)) ||
+                (2u == context_size_a && (17u == current_transition_a)))
+            {
+                p_context->elements++;
+            }
+        }
+        break;
     }
 
     if (1u == context_size_a && (lexeme_a.value == "}" || lexeme_a.value == "]"))
