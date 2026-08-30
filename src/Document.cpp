@@ -150,7 +150,7 @@ Lexeme evaluate_next_lexeme(std::string_view json_data_a)
             return Lexeme::keyword;
         }
 
-        const std::size_t start_idx = ('-' == value_a.front() || '+' == value_a.front()) ? 1u : 0u;
+        const std::size_t start_idx = ('-' == value_a.front()) ? 1u : 0u;
         std::size_t fp_cnt = 0;
 
         for (std::size_t i = start_idx; i < value_a.length(); i++)
@@ -339,7 +339,14 @@ bool evaluate_json(std::string_view json_data_a, TransitionCallback on_transitio
         }
         else
         {
-            p_current = p_end;
+            if (false == lexeme.value.empty())
+            {
+                return false;
+            }
+            else
+            {
+                p_current = p_end;
+            }
         }
     }
 
