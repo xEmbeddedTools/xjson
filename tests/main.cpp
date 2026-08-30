@@ -1,4 +1,12 @@
+/*
+ *  Copyright (c) xEmbeddedTools team and contributors.
+ *  Licensed under the Apache License, Version 2.0. See LICENSE file in the project root for details.
+ */
+
+// externals
 #include <catch2/catch.hpp>
+
+// xjson
 #include <xjson/Document.hpp>
 
 TEST_CASE("empty array is valid")
