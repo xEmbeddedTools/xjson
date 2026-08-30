@@ -13,44 +13,44 @@ TEST_CASE("scalar values", "[validation]")
 {
     SECTION("strings")
     {
-        REQUIRE(xjson::Document(R"("text")").is_valid());
-        REQUIRE(xjson::Document(R"("")").is_valid());
+        REQUIRE(true == xjson::Document(R"("text")").is_valid());
+        REQUIRE(true == xjson::Document(R"("")").is_valid());
     }
     SECTION("integers and decimals")
     {
         for (const auto json : { "0", "42", "-42", "0.25", "-0.25" })
         {
-            REQUIRE(xjson::Document(json).is_valid());
+            REQUIRE(true == xjson::Document(json).is_valid());
         }
     }
     SECTION("keywords")
     {
         for (const auto json : { "true", "false", "null" })
         {
-            REQUIRE(xjson::Document(json).is_valid());
+            REQUIRE(true == xjson::Document(json).is_valid());
         }
     }
 }
 
 TEST_CASE("accepts supported compound JSON values and whitespace", "[validation]")
 {
-    REQUIRE(xjson::Document("{}").is_valid());
-    REQUIRE(xjson::Document("[]").is_valid());
-    REQUIRE(xjson::Document(R"( { "name" : "Ada", "scores" : [ 10, 20 ] } )").is_valid());
-    REQUIRE(xjson::Document(R"(
+    REQUIRE(true == xjson::Document("{}").is_valid());
+    REQUIRE(true == xjson::Document("[]").is_valid());
+    REQUIRE(true == xjson::Document(R"( { "name" : "Ada", "scores" : [ 10, 20 ] } )").is_valid());
+    REQUIRE(true == xjson::Document(R"(
 [
   { "enabled": true },
   null
 ]
 )")
-                .is_valid());
+                        .is_valid());
 }
 
 TEST_CASE("rejects malformed JSON", "[validation]")
 {
     for (const auto json : { "{", "[", "{\"key\"}", "{\"key\":}", "[1,]", "{\"key\":1,}", "[1 2]", "{\"key\":1 \"next\":2}" })
     {
-        REQUIRE_FALSE(xjson::Document(json).is_valid());
+        REQUIRE(false == xjson::Document(json).is_valid());
     }
 }
 
@@ -58,7 +58,7 @@ TEST_CASE("rejects unsupported number spellings", "[validation]")
 {
     for (const auto json : { "00", "01", "-01", ".1", "1.", "1.0.0", "-", "1e3", "0.avc" })
     {
-        REQUIRE_FALSE(xjson::Document(json).is_valid());
+        REQUIRE(false == xjson::Document(json).is_valid());
     }
 }
 
