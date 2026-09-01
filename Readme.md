@@ -63,7 +63,7 @@ Ada: 10
 - `Array::get<T>(index)` retrieves an array element; the index must be less than `elements_count`.
 - `Object::fields_count` and `Array::elements_count` contain the number of fields and elements, respectively.
 
-A missing object or array converts to `false`. Scalar values are returned as `Document::Value`, which is a `std::string_view`; for a JSON string, it does not include the surrounding quotation marks.
+A missing Value, Object or Array converts to `false`.
 
 > `Document` does not own its input data. The text passed to its constructor must remain alive while the document, and any objects or arrays obtained from it, are in use.
 
