@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.12)
 
 add_library(Catch2 "${CMAKE_CURRENT_LIST_DIR}/catch.cpp")
 target_compile_features(Catch2 PUBLIC cxx_std_20)

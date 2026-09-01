@@ -5,7 +5,7 @@
 ## Requirements
 
 - A compiler with C++20 support
-- CMake 3.21 or newer
+- CMake 3.12 or newer
 
 ## Adding it to a CMake project
 
