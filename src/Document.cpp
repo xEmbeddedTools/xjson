@@ -6,6 +6,10 @@
 // this
 #include <xjson/Document.hpp>
 
+// std
+#include <algorithm>
+#include <cstdint>
+
 #ifndef XJSON_MAX_NESTING_DEPTH
 #define XJSON_MAX_NESTING_DEPTH 17u
 #endif
@@ -251,7 +255,6 @@ Lexeme evaluate_next_lexeme(std::string_view json_data_a)
     const char* p_current = json_data_a.data();
     const char* const p_end = json_data_a.data() + json_data_a.size();
 
-    std::uint16_t start_column = 0u;
     std::uint32_t flags = 0x0u;
 
     while (p_current != p_end)
@@ -520,6 +523,9 @@ bool evaluate_node(std::size_t current_transition_a, std::size_t context_size_a,
             }
         }
         break;
+
+        case Scope::unknown:
+            break;
     }
 
     if (1u == context_size_a && (lexeme_a.value == "}" || lexeme_a.value == "]"))
