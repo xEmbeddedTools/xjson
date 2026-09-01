@@ -287,7 +287,8 @@ Lexeme evaluate_next_lexeme(std::string_view json_data_a)
                 case ' ':
                 case '\r':
                 case '\t':
-                case '\n': {
+                case '\n':
+                case '\0': {
                     if (has_data == (flags & has_data))
                     {
                         flags = (flags & ~has_data) | dirty;
