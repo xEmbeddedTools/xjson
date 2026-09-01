@@ -15,8 +15,8 @@ namespace xjson {
 class Document
 {
 public:
-    constexpr static auto npos = static_cast<std::size_t>(-1);
-
+    struct Value;
+    struct Object;
     struct Array;
 
     struct Value
@@ -53,7 +53,6 @@ public:
 
         friend class Document;
     };
-
     struct Object
     {
         const std::size_t fields_count = 0u;
