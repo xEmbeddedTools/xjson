@@ -17,9 +17,43 @@ class Document
 public:
     constexpr static auto npos = static_cast<std::size_t>(-1);
 
-    using Value = std::string_view;
-
     struct Array;
+
+    struct Value
+    {
+        operator bool() const
+        {
+            return nullptr != this->p_begin && nullptr != this->p_end;
+        }
+
+        operator std::string_view() const
+        {
+            return { this->p_begin, this->p_end };
+        }
+
+        friend bool operator==(Value left_a, std::string_view right_a)
+        {
+            return std::string_view { left_a.p_begin, left_a.p_end } == right_a;
+        }
+        friend bool operator==(std::string_view left_a, Value right_a)
+        {
+            return std::string_view{ right_a.p_begin, right_a.p_end } == left_a;
+        }
+
+    private:
+        Value() = default;
+        Value(const char* p_begin_a, const char* p_end_a)
+            : p_begin(p_begin_a)
+            , p_end(p_end_a)
+        {
+        }
+
+        const char* p_begin = nullptr;
+        const char* p_end = nullptr;
+
+        friend class Document;
+    };
+
     struct Object
     {
         const std::size_t fields_count = 0u;

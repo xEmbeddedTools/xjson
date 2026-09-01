@@ -613,7 +613,7 @@ template<> Document::Value Document::get_root() const
 
     if (Lexeme::string == lexeme.kind || Lexeme::number == lexeme.kind || Lexeme::keyword == lexeme.kind)
     {
-        return lexeme.value;
+        return { lexeme.value.data(), lexeme.value.data() + lexeme.value.length() };
     }
 
     return {};
@@ -671,7 +671,7 @@ template<> Document::Value Document::Object::get(std::string_view key_a) const
     if (true == find_key_res && nullptr != context.p_current && ('{' != (*context.p_current) && '[' != (*context.p_current)))
     {
         const auto lexeme = evaluate_next_lexeme({ context.p_current, this->p_end });
-        return lexeme.value;
+        return { lexeme.value.data(), lexeme.value.data() + lexeme.value.length() };
     }
 
     return {};
@@ -735,7 +735,7 @@ template<> Document::Value Document::Array::get(std::size_t index_a) const
         ('{' != *(evaluate_array_element_context.p_current) && '[' != *(evaluate_array_element_context.p_current)))
     {
         const auto lexeme = evaluate_next_lexeme({ evaluate_array_element_context.p_current, this->p_end });
-        return lexeme.value;
+        return { lexeme.value.data(), lexeme.value.data() + lexeme.value.length() };
     }
 
     return {};
