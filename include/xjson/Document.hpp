@@ -19,6 +19,7 @@ public:
 
     using Value = std::string_view;
 
+    struct Array;
     struct Object
     {
         const std::size_t fields_count = 0u;
