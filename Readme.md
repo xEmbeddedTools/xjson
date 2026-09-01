@@ -1,13 +1,15 @@
 # xjson
 
-`xjson` is a small C++20 library for validating and reading JSON data. It exposes document data through `std::string_view`, so retrieving values does not require copying them. It performs no dynamic memory allocation, making it suitable for memory-constrained embedded systems.
+`xjson` is a small C++20 library for validating and reading JSON data. It performs no dynamic memory allocation, making it suitable for memory-constrained embedded systems.
 
-## Requirements
+### Requirements
 
 - A compiler with C++20 support
 - CMake 3.12 or newer
 
-## Adding it to a CMake project
+# Quick start
+
+### CMake project integration
 
 Add the project as a subdirectory, then link your program with the `xjson` target:
 
@@ -16,16 +18,14 @@ add_subdirectory(path/to/xjson)
 target_link_libraries(my_application PRIVATE xjson)
 ```
 
-The public API header is available at:
-
-```cpp
-#include <xjson/Document.hpp>
-```
-
 ## Example
 
 ```cpp
+
+// xjson
 #include <xjson/Document.hpp>
+
+// std
 #include <iostream>
 #include <string_view>
 
