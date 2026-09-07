@@ -29,6 +29,16 @@ public:
 
     struct Value
     {
+        enum class Kind
+        {
+            string,
+            number,
+            boolean,
+            null,
+            unknown
+        };
+        using enum Kind;
+
         operator bool() const
         {
             return nullptr != this->p_begin && nullptr != this->p_end;
@@ -45,13 +55,16 @@ public:
         }
         friend bool operator==(std::string_view left_a, Value right_a)
         {
-            return std::string_view{ right_a.p_begin, right_a.p_end } == left_a;
+            return std::string_view { right_a.p_begin, right_a.p_end } == left_a;
         }
+
+        const Kind kind = Kind::unknown;
 
     private:
         Value() = default;
-        Value(const char* p_begin_a, const char* p_end_a)
-            : p_begin(p_begin_a)
+        Value(const char* p_begin_a, const char* p_end_a, Kind kind_a)
+            : kind(kind_a)
+            , p_begin(p_begin_a)
             , p_end(p_end_a)
         {
         }
