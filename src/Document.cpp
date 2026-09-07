@@ -77,28 +77,28 @@ public:
     template<typename T> void push(T v)
     {
         const std::uint32_t masked = static_cast<std::uint32_t>(v) & mask;
-        this->d[size / 32u] |= (masked << (size & 31u));
-        size += width;
+        this->d[this->size / 32u] |= (masked << (this->size & 31u));
+        this->size += width;
     }
 
     void pop()
     {
-        if (size >= width)
+        if (this->size >= width)
         {
-            size -= width;
-            this->d[size / 32u] &= ~(mask << (size & 31u));
+            this->size -= width;
+            this->d[this->size / 32u] &= ~(mask << (this->size & 31u));
         }
     }
 
     template<typename T> T top() const
     {
-        const std::uint32_t current = size > 0u ? size - width : 0u;
+        const std::uint32_t current = this->size > width ? this->size - width : 0u;
         return static_cast<T>((this->d[current / 32u] >> (current & 31u)) & mask);
     }
 
     bool is_empty() const
     {
-        return 0u == size;
+        return 0u == this->size;
     }
 
     std::size_t get_size() const
