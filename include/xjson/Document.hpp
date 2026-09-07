@@ -59,11 +59,13 @@ public:
         }
 
         const Kind kind = Kind::unknown;
+        const std::size_t length = 0u;
 
     private:
         Value() = default;
-        Value(const char* p_begin_a, const char* p_end_a, Kind kind_a)
+        Value(const char* p_begin_a, const char* p_end_a, Kind kind_a, std::size_t length_a)
             : kind(kind_a)
+            , length(length_a)
             , p_begin(p_begin_a)
             , p_end(p_end_a)
         {
