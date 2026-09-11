@@ -44,6 +44,8 @@ int main()
     const auto scores = root.get<xjson::Document::Array>("scores");
 
     std::cout << name << ": " << scores.get<xjson::Document::Value>(0) << '\n';
+
+    return 0;
 }
 ```
 
