@@ -89,8 +89,6 @@ target_compile_definitions(xjson PRIVATE XJSON_MAX_NESTING_DEPTH=8)
 - Exponent notation such as `1e3` is not supported. Numeric lexemes of 32 or more characters are rejected.
 - Nesting depth is limited by `XJSON_MAX_NESTING_DEPTH` (17 by default); more deeply nested documents are rejected.
 
-Do not use `is_valid()` as proof of strict RFC 8259 conformance. Validate the expected input subset thoroughly before using the library in production.
-
 ## Tests
 
 The tests use Catch2, whose source is included in `tests/externals/catch2`.
