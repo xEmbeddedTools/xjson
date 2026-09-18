@@ -119,6 +119,7 @@ TEST_CASE("reads nested objects and arrays from an object", "[object][nested]")
 
     const auto object = document.get_root<xjson::Document::Object>();
     REQUIRE(true == object);
+    REQUIRE(2u == object.fields_count);
 
     const auto profile = object.get<xjson::Document::Object>("profile");
     REQUIRE(true == profile);

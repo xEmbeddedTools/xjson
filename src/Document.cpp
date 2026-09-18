@@ -509,6 +509,12 @@ struct EvaluateNodeContext
 {
     std::uint32_t elements = 0u;
     const char* p_current = nullptr;
+    const Scope::Kind expected_scope;
+
+    EvaluateNodeContext(Scope::Kind expected_scope_a)
+        : expected_scope(expected_scope_a)
+    {
+    }
 };
 bool evaluate_node(std::size_t current_transition_a, std::size_t context_size_a, Scope::Kind scope_a, const Lexeme& lexeme_a, void* p_user_data_a)
 {
@@ -517,18 +523,31 @@ bool evaluate_node(std::size_t current_transition_a, std::size_t context_size_a,
     switch (scope_a)
     {
         case Scope::object: {
-            if ((1u == context_size_a && 9u == current_transition_a) || (2u == context_size_a && 1u == current_transition_a))
+            if (Scope::object == p_context->expected_scope)
             {
-                p_context->elements++;
+                if (1u == context_size_a && 9u == current_transition_a)
+                {
+                    p_context->elements++;
+                }
+            }
+            else if (Scope::array == p_context->expected_scope)
+            {
+                if (2u == context_size_a && 1u == current_transition_a)
+                {
+                    p_context->elements++;
+                }
             }
         }
         break;
 
         case Scope::array: {
-            if ((1u == context_size_a && (current_transition_a >= 11u && current_transition_a <= 15u)) ||
-                (2u == context_size_a && (17u == current_transition_a)))
+            if (Scope::array == p_context->expected_scope)
             {
-                p_context->elements++;
+                if ((1u == context_size_a && (current_transition_a >= 11u && current_transition_a <= 15u)) ||
+                    (2u == context_size_a && (17u == current_transition_a || 1u == current_transition_a)))
+                {
+                    p_context->elements++;
+                }
             }
         }
         break;
@@ -661,7 +680,7 @@ template<> Document::Object Document::get_root() const
 
     if (Lexeme::separator == lexeme.kind && "{" == lexeme.value)
     {
-        EvaluateNodeContext evaluate_node_context;
+        EvaluateNodeContext evaluate_node_context(Scope::object);
         bool evaluate_node_res = evaluate_json(
             {
                 this->data.data(),
@@ -683,7 +702,7 @@ template<> Document::Array Document::get_root() const
 
     if (Lexeme::separator == lexeme.kind && "[" == lexeme.value)
     {
-        EvaluateNodeContext evaluate_node_context;
+        EvaluateNodeContext evaluate_node_context(Scope::array);
         bool evaluate_node_res = evaluate_json(
             {
                 this->data.data(),
@@ -720,7 +739,7 @@ template<> Document::Object Document::Object::get(std::string_view key_a) const
 
     if (true == find_key_res && nullptr != find_key_context.p_current && '{' == (*find_key_context.p_current))
     {
-        EvaluateNodeContext evaluate_node_context;
+        EvaluateNodeContext evaluate_node_context(Scope::object);
         bool evaluate_node_res = evaluate_json(
             {
                 find_key_context.p_current,
@@ -743,7 +762,7 @@ template<> Document::Array Document::Object::get(std::string_view key_a) const
 
     if (true == find_key_res && nullptr != find_key_context.p_current && '[' == (*find_key_context.p_current))
     {
-        EvaluateNodeContext evaluate_node_context;
+        EvaluateNodeContext evaluate_node_context(Scope::array);
         bool evaluate_node_res = evaluate_json(
             {
                 find_key_context.p_current,
@@ -787,7 +806,7 @@ template<> Document::Object Document::Array::get(std::size_t index_a) const
 
     if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current && '{' == *(evaluate_array_element_context.p_current))
     {
-        EvaluateNodeContext evaluate_node_context;
+        EvaluateNodeContext evaluate_node_context(Scope::object);
         bool evaluate_node_res = evaluate_json(
             {
                 evaluate_array_element_context.p_current,
@@ -813,7 +832,7 @@ template<> Document::Array Document::Array::get(std::size_t index_a) const
 
     if (true == evaluate_node_res && nullptr != evaluate_array_element_context.p_current && '[' == *(evaluate_array_element_context.p_current))
     {
-        EvaluateNodeContext evaluate_node_context;
+        EvaluateNodeContext evaluate_node_context(Scope::array);
         bool evaluate_node_res = evaluate_json(
             {
                 evaluate_array_element_context.p_current,
