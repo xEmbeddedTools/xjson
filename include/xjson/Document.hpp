@@ -39,40 +39,38 @@ public:
         };
         using enum Kind;
 
-        operator bool() const
+        constexpr operator bool() const
         {
-            return nullptr != this->p_begin && nullptr != this->p_end;
+            return nullptr != this->p_data && 0u != this->length;
         }
 
-        operator std::string_view() const
+        constexpr operator std::string_view() const
         {
-            return { this->p_begin, this->p_end };
+            return { this->p_data, this->length };
         }
 
-        friend bool operator==(Value left_a, std::string_view right_a)
+        constexpr friend bool operator==(Value left_a, const char* p_right_a)
         {
-            return std::string_view { left_a.p_begin, left_a.p_end } == right_a;
+            return left_a == std::string_view { p_right_a };
         }
-        friend bool operator==(std::string_view left_a, Value right_a)
+        constexpr friend bool operator==(const char* p_left_a, Value right_a)
         {
-            return std::string_view { right_a.p_begin, right_a.p_end } == left_a;
+            return right_a == p_left_a;
         }
+
+        const char* p_data = nullptr;
+        const std::size_t length = 0u;
 
         const Kind kind = Kind::unknown;
-        const std::size_t length = 0u;
 
     private:
         Value() = default;
-        Value(const char* p_begin_a, const char* p_end_a, Kind kind_a, std::size_t length_a)
-            : kind(kind_a)
+        constexpr Value(const char* p_begin_a, std::size_t length_a, Kind kind_a)
+            : p_data(p_begin_a)
             , length(length_a)
-            , p_begin(p_begin_a)
-            , p_end(p_end_a)
+            , kind(kind_a)
         {
         }
-
-        const char* p_begin = nullptr;
-        const char* p_end = nullptr;
 
         friend class Document;
     };
