@@ -44,6 +44,8 @@ int main()
     const auto scores = root.get<xjson::Document::Array>("scores");
 
     std::cout << name << ": " << scores.get<xjson::Document::Value>(0) << '\n';
+
+    return 0;
 }
 ```
 
@@ -87,11 +89,7 @@ target_compile_definitions(xjson PRIVATE XJSON_MAX_NESTING_DEPTH=8)
 `xjson` is not yet fully compliant with [RFC 8259](https://www.rfc-editor.org/info/rfc8259/). In particular:
 
 - Exponent notation such as `1e3` is not supported. Numeric lexemes of 32 or more characters are rejected.
-- JSON string escape sequences, including `\"`, `\\`, `\n`, and `\uXXXX`, are not supported.
-- Unescaped control characters inside strings may be accepted.
 - Nesting depth is limited by `XJSON_MAX_NESTING_DEPTH` (17 by default); more deeply nested documents are rejected.
-
-Do not use `is_valid()` as proof of strict RFC 8259 conformance. Validate the expected input subset thoroughly before using the library in production.
 
 ## Tests
 
