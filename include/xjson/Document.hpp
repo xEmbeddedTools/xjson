@@ -41,7 +41,7 @@ public:
 
         constexpr operator bool() const
         {
-            return nullptr != this->p_data && 0u != this->length;
+            return nullptr != this->p_data && Kind::unknown != this->kind;
         }
 
         constexpr operator std::string_view() const
